@@ -1,122 +1,69 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+// 가져오기
+import "./App.css";
+import Myheader from "./components/Myheader.jsx";
+import Nav from "./components/Nav.jsx";
+import MyArticle from "./components/MyArticle.jsx";
+import { useState } from "react";
 
+// 본문
 function App() {
-  const [count, setCount] = useState(0)
+  console.log("App render");
+  const [id, setId] = useState(1);
+  const [mode, setMode] = useState("welcome");
+  const [subject, setSubject] = useState({
+    title: "프론트엔드 개발자",
+    desc: "기본언어인 html, css, javascript부터 학습합니다.",
+  });
 
+  // 데이터
+  const [content, setContent] = useState([
+    { id: 1, title: "UI/UX 개발", desc: "사용자 경험을 고려한 직관적이고 반응성 높은 화면 구현" },
+    {
+      id: 2,
+      title: "재사용이 가능한 UI 개발",
+      desc: "컴포넌트 기반으로 동일한 UI를 효율적으로 재사용 가능",
+    },
+    { id: 3, title: "애니메이션 구현", desc: "상태 변화에 따른 자연스럽고 동적인 화면 효과 구현" },
+  ]);
+
+  const welcome = { title: "welcome", desc: "Welcome to react" };
+
+  let _title = null;
+  let _desc = null;
+
+  if (mode === "welcome") {
+    _title = welcome.title;
+    _desc = welcome.desc;
+  } else if (mode === "read") {
+    const selected = content.find(c => c.id === id);
+    console.log(selected);
+    if (selected) {
+      _title = selected.title;
+      _desc = selected.desc;
+    }
+  }
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <Myheader
+        title={subject.title}
+        desc={subject.desc}
+        // id가 들어오면 id와 mode를 변경해주는 함수를 인수로 담아줌.
+        onChangeMode={() => {
+          setMode("welcome");
+        }}
+      />
 
-      <div className="ticks"></div>
+      <Nav
+        data={content}
+        onChangeMode={_id => {
+          setMode("read");
+          setId(_id);
+        }}
+      />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      <MyArticle title={_title} desc={_desc} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
