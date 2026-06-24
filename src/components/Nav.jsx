@@ -21,9 +21,10 @@ const Nav = memo(function Nav({ data, onChangeMode }) {
   ));
   //list에 출력할 코드 생성
   return (
-    <nav>
+    <nav className={styles.nav}>
       <ul>{lists}</ul>
     </nav>
   );
 });
+
 export default Nav;
