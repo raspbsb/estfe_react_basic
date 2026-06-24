@@ -4,8 +4,8 @@ import Myheader from "./components/Myheader";
 import Nav from "./components/Nav";
 import MyArticle from "./components/MyArticle";
 import { useState, useCallback, useMemo } from "react";
-import Controls from "./components/controls";
-import CreateArticle from "./components/createArticle";
+import Controls from "./components/Controls";
+import CreateArticle from "./components/CreateArticle";
 import UpdateArticle from "./components/UpdateArticle";
 import { v4 as uuidv4 } from "uuid";
 
