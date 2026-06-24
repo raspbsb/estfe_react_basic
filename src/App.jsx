@@ -1,9 +1,12 @@
 // 가져오기
 import "./App.css";
-import Myheader from "./components/Myheader.jsx";
-import Nav from "./components/Nav.jsx";
-import MyArticle from "./components/MyArticle.jsx";
-import { useState } from "react";
+import Myheader from "./components/Myheader";
+import Nav from "./components/Nav";
+import MyArticle from "./components/MyArticle";
+import { useState, useCallback } from "react";
+import Controls from "./components/controls";
+import CreateArticle from "./components/createArticle";
+import UpdateArticle from "./components/UpdateArticle";
 
 // 본문
 function App() {
@@ -25,15 +28,27 @@ function App() {
     },
     { id: 3, title: "애니메이션 구현", desc: "상태 변화에 따른 자연스럽고 동적인 화면 효과 구현" },
   ]);
-
   const welcome = { title: "welcome", desc: "Welcome to react" };
+
+  const [maxId, setMaxid] = useState(3);
 
   let _title = null;
   let _desc = null;
+  let _article = null;
+
+  const handleDelete = () => {
+    if (window.confirm("정말 삭제할까요?")) {
+      setContent(prev => prev.filter(item => item.id !== id));
+      setMode("welcome");
+    } else {
+      setMode("welcome");
+    }
+  };
 
   if (mode === "welcome") {
     _title = welcome.title;
     _desc = welcome.desc;
+    _article = <MyArticle title={_title} desc={_desc} />;
   } else if (mode === "read") {
     const selected = content.find(c => c.id === id);
     console.log(selected);
@@ -41,27 +56,82 @@ function App() {
       _title = selected.title;
       _desc = selected.desc;
     }
+    _article = (
+      <MyArticle
+        title={_title}
+        desc={_desc}
+        onChangeMode={() => {
+          setMode("update");
+        }}
+        onDelete={handleDelete}
+      />
+    );
+  } else if (mode === "create") {
+    _article = (
+      <CreateArticle
+        onSubmit={(_title, _desc) => {
+          const newId = maxId + 1;
+
+          let _contents = content.concat({ id: newId, title: _title, desc: _desc });
+          setContent(_contents);
+          setMaxid(newId);
+          setId(newId);
+          setMode("read");
+        }}
+      />
+    );
+  } else if (mode === "update") {
+    const selected = content.find(c => c.id === id);
+    console.log(selected);
+    if (!selected) return null;
+
+    _article = (
+      <UpdateArticle
+        title={selected.title}
+        desc={selected.desc}
+        onSubmit={(_title, _desc) => {
+          setContent(prev =>
+            prev.map(p => (p.id === id ? { ...p, title: _title, desc: _desc } : p)),
+          );
+          setMode("read");
+        }}
+      />
+    );
   }
+
+  const handleChangeMode = useCallback(_id => {
+    setMode("read");
+    setId(_id);
+  }, []);
+
   return (
     <>
       <Myheader
         title={subject.title}
         desc={subject.desc}
-        // id가 들어오면 id와 mode를 변경해주는 함수를 인수로 담아줌.
         onChangeMode={() => {
           setMode("welcome");
         }}
       />
-
-      <Nav
-        data={content}
-        onChangeMode={_id => {
-          setMode("read");
-          setId(_id);
+      {/* <header>
+        <h1
+          className="logo"
+          onClick={() => {
+            setMode("welcome");
+          }}
+        >
+          {subject.title}
+        </h1>
+        <p>{subject.desc}</p>
+      </header> */}
+      <Nav data={content} onChangeMode={handleChangeMode} />
+      {_article}
+      <hr />
+      <Controls
+        onChangeMode={() => {
+          setMode("create");
         }}
       />
-
-      <MyArticle title={_title} desc={_desc} />
     </>
   );
 }
