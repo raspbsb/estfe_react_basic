@@ -1,7 +1,9 @@
+import styles from "./Controls.module.css";
+
 function Controls({ onChangeMode }) {
   console.log("Controls render");
   return (
-    <div className="menu">
+    <div className={styles.menu}>
       <button
         onClick={() => {
           onChangeMode();

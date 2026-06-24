@@ -1,3 +1,4 @@
+import styles from "./Nav.module.css";
 import { memo } from "react";
 
 // Nav 컴포넌트 : 매개변수로 받은 변수와 함수로 순회 렌더링

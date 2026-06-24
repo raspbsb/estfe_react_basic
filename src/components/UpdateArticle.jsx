@@ -1,10 +1,12 @@
+import styles from "./UpdateArticle.module.css";
 import { useState } from "react";
 
-function UpdateArticle({ title, desc, onSubmit }) {
+function UpdateArticle({ title, desc, diff, onSubmit }) {
   console.log("UpdateArticle render");
   const [content, setContent] = useState({
     title: title,
     desc: desc,
+    diff: diff,
   });
 
   // const [newTitle, setNewTitle] = useState(title);
@@ -28,13 +30,13 @@ function UpdateArticle({ title, desc, onSubmit }) {
   };
 
   return (
-    <>
+    <section>
       <h2>Update Article</h2>
       <form
         action=""
         onSubmit={e => {
           e.preventDefault();
-          onSubmit(e.target.title.value, e.target.desc.value);
+          onSubmit(e.target.title.value, e.target.desc.value, e.target.diff.value);
         }}
       >
         <div>
@@ -51,9 +53,19 @@ function UpdateArticle({ title, desc, onSubmit }) {
           <label htmlFor="desc">desc</label>
           <textarea name="desc" id="desc" value={content.desc} onChange={handleChange}></textarea>
         </div>
+        <div>
+          <label htmlFor="diff">desc</label>
+          <input
+            type="number"
+            name="diff"
+            id="diff"
+            value={content.diff}
+            onChange={handleChange}
+          ></input>
+        </div>
         <button>Submit</button>
       </form>
-    </>
+    </section>
   );
 }
 export default UpdateArticle;
