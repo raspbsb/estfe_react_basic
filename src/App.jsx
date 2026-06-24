@@ -3,10 +3,11 @@ import "./App.css";
 import Myheader from "./components/Myheader";
 import Nav from "./components/Nav";
 import MyArticle from "./components/MyArticle";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import Controls from "./components/controls";
 import CreateArticle from "./components/createArticle";
 import UpdateArticle from "./components/UpdateArticle";
+import { v4 as uuidv4 } from "uuid";
 
 // 본문
 function App() {
@@ -70,7 +71,7 @@ function App() {
     _article = (
       <CreateArticle
         onSubmit={(_title, _desc) => {
-          const newId = maxId + 1;
+          const newId = uuidv4();
 
           let _contents = content.concat({ id: newId, title: _title, desc: _desc });
           setContent(_contents);
