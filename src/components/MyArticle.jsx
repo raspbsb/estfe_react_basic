@@ -9,7 +9,7 @@ function MyArticle({ mode, title, desc, onChangeMode, diff, onDelete }) {
         <h2>{title}</h2>
         <div className={styles.pBox}>
           <p>{desc}</p>
-          {mode === "read" && <p className={styles.diff}>난이도: {diff}</p>}
+          {diff && <p className={styles.diff}>난이도: {diff}</p>}
         </div>
       </article>
       <div className={styles.btnBox}>

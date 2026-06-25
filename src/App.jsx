@@ -17,7 +17,6 @@ function App() {
   const [subject, setSubject] = useState({
     title: "프론트엔드 개발자",
     desc: "기본언어인 html, css, javascript부터 학습합니다.",
-    diff: 0,
   });
 
   // 데이터
@@ -50,75 +49,131 @@ function App() {
   let _diff = null;
   let _article = null;
 
+  const selectedArticle = useMemo(() => content.find(item => item.id === id), [content, id]);
+
   const handleDelete = () => {
     if (window.confirm("정말 삭제할까요?")) {
       setContent(prev => prev.filter(item => item.id !== id));
-      setMode("welcome");
-    } else {
-      setMode("welcome");
+    }
+    setMode("welcome");
+  };
+
+  const handleSubmitUpdate = (_title, _desc, _diff) => {
+    setContent(prev =>
+      prev.map(p => (p.id === id ? { ...p, title: _title, desc: _desc, diff: _diff } : p)),
+    );
+    setMode("read");
+  };
+
+  const handleSubmitCreate = (_title, _desc, _diff) => {
+    const newId = uuidv4();
+    let _contents = content.concat({
+      id: newId,
+      title: _title,
+      desc: _desc,
+      diff: _diff,
+    });
+    setContent(_contents);
+    // setMaxid(newId);
+    setId(newId);
+    setMode("read");
+  };
+
+  const renderArticle = () => {
+    switch (mode) {
+      case "read":
+        return (
+          <MyArticle
+            mode={mode}
+            title={selectedArticle?.title ?? welcome.title}
+            desc={selectedArticle?.desc ?? welcome.desc}
+            diff={selectedArticle?.diff ?? welcome.diff}
+            onChangeMode={() => {
+              setMode("update");
+            }}
+            onDelete={handleDelete}
+          />
+        );
+
+      case "create":
+        return <CreateArticle onSubmit={handleSubmitCreate} />;
+
+      case "update":
+        return (
+          <UpdateArticle
+            title={selectedArticle.title}
+            desc={selectedArticle.desc}
+            diff={selectedArticle.diff}
+            onSubmit={handleSubmitUpdate}
+          />
+        );
+
+      default:
+        _article = <MyArticle title={welcome.title} desc={welcome.desc} />;
+        break;
     }
   };
 
-  if (mode === "welcome") {
-    _title = welcome.title;
-    _desc = welcome.desc;
-    _diff = welcome.diff;
+  // if (mode === "welcome") {
+  //   _title = welcome.title;
+  //   _desc = welcome.desc;
+  //   _diff = welcome.diff;
 
-    _article = <MyArticle title={_title} desc={_desc} diff={_diff} />;
-  } else if (mode === "read") {
-    const selected = content.find(c => c.id === id);
-    console.log(selected);
-    if (selected) {
-      _title = selected.title;
-      _desc = selected.desc;
-      _diff = selected.diff;
-    }
-    _article = (
-      <MyArticle
-        mode={mode}
-        title={_title}
-        desc={_desc}
-        diff={_diff}
-        onChangeMode={() => {
-          setMode("update");
-        }}
-        onDelete={handleDelete}
-      />
-    );
-  } else if (mode === "create") {
-    _article = (
-      <CreateArticle
-        onSubmit={(_title, _desc, _diff) => {
-          const newId = uuidv4();
+  //   _article = <MyArticle title={_title} desc={_desc} diff={_diff} />;
+  // } else if (mode === "read") {
+  //   const selected = content.find(c => c.id === id);
+  //   console.log(selected);
+  //   if (selected) {
+  //     _title = selected.title;
+  //     _desc = selected.desc;
+  //     _diff = selected.diff;
+  //   }
+  //   _article = (
+  //     <MyArticle
+  //       mode={mode}
+  //       title={_title}
+  //       desc={_desc}
+  //       diff={_diff}
+  //       onChangeMode={() => {
+  //         setMode("update");
+  //       }}
+  //       onDelete={handleDelete}
+  //     />
+  //   );
+  // } else if (mode === "create") {
+  //   _article = (
+  //     <CreateArticle
+  //       onSubmit={(_title, _desc, _diff) => {
+  //         const newId = uuidv4();
 
-          let _contents = content.concat({ id: newId, title: _title, desc: _desc, diff: _diff });
+  //         let _contents = content.concat({ id: newId, title: _title, desc: _desc, diff: _diff });
 
-          setContent(_contents);
-          setMaxid(newId);
-          setId(newId);
-          setMode("read");
-        }}
-      />
-    );
-  } else if (mode === "update") {
-    const selected = content.find(c => c.id === id);
-    console.log(selected);
-    if (!selected) return null;
+  //         setContent(_contents);
+  //         setMaxid(newId);
+  //         setId(newId);
+  //         setMode("read");
+  //       }}
+  //     />
+  //   );
+  // } else if (mode === "update") {
+  //   const selected = content.find(c => c.id === id);
+  //   console.log(selected);
+  //   if (!selected) return null;
 
-    _article = (
-      <UpdateArticle
-        title={selected.title}
-        desc={selected.desc}
-        diff={selected.diff}
-        onSubmit={(_title, _desc, _diff) => {
-          setContent(prev =>
-            prev.map(p => (p.id === id ? { ...p, title: _title, desc: _desc, diff: _diff } : p)),
-          );
-          setMode("read");
-        }}
-      />
-    );
-  }
+  //   _article = (
+  //     <UpdateArticle
+  //       title={selected.title}
+  //       desc={selected.desc}
+  //       diff={selected.diff}
+  //       onSubmit={(_title, _desc, _diff) => {
+  //         setContent(prev =>
+  //           prev.map(p => (p.id === id ? { ...p, title: _title, desc: _desc, diff: _diff } : p)),
+  //         );
+  //         setMode("read");
+  //       }}
+  //     />
+  //   );
+  // }
 
   const handleChangeMode = useCallback(_id => {
     setMode("read");
@@ -134,6 +189,7 @@ function App() {
           setMode("welcome");
         }}
       />
+
       {/* <header>
         <h1
           className="logo"
@@ -145,7 +201,9 @@ function App() {
         </h1>
         <p>{subject.desc}</p>
       </header> */}
+
       <Nav data={content} onChangeMode={handleChangeMode} />
+      {renderArticle()}
       {_article}
       <Controls
         onChangeMode={() => {
