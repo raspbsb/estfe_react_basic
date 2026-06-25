@@ -1,10 +1,11 @@
-import styles from "./Controls.module.css";
+// import styles from "./Controls.module.css";
 
 function Controls({ onChangeMode }) {
   console.log("Controls render");
   return (
-    <div className={styles.menu}>
+    <div className="menu">
       <button
+        className="btn btn-primary"
         onClick={() => {
           onChangeMode();
         }}

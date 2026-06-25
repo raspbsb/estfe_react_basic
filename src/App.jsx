@@ -110,6 +110,7 @@ function App() {
 
       default:
         _article = <MyArticle title={welcome.title} desc={welcome.desc} />;
+        return _article;
         break;
     }
   };
@@ -202,9 +203,9 @@ function App() {
         <p>{subject.desc}</p>
       </header> */}
 
-      <Nav data={content} onChangeMode={handleChangeMode} />
+      <Nav data={content} id={id} onChangeMode={handleChangeMode} />
       {renderArticle()}
-      {_article}
+      {/* {_article} */}
       <Controls
         onChangeMode={() => {
           setMode("create");
